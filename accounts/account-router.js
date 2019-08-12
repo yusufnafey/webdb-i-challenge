@@ -4,10 +4,10 @@ const router = express.Router();
 
 // adding first() in get /
 // for post why is it .insert(account, 'id') in guided
+// put is not returning
 
 router.get("/", (req, res) => {
-  db.select("id", "name", "budget")
-    .from("accounts")
+  db("accounts")
     .then(account => {
       res.status(200).json(account);
     })
@@ -51,12 +51,30 @@ router.put("/:id", (req, res) => {
       }
     })
     .catch(error => {
-      res
-        .status(500)
-        .json({ message: "There was an error getting the account. " });
+      res.status(500).json({
+        message: "There was an error getting the account information. "
+      });
     });
 });
 
-router.delete("/:id", (req, res) => {});
+router.delete("/:id", (req, res) => {
+  db("accounts")
+    .where({ id: req.params.id })
+    .del()
+    .then(count => {
+      if (count > 0) {
+        res.status.json(count);
+      } else {
+        res
+          .status(404)
+          .json({ message: "There was an error deleting the account." });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "There was an error getting the account information. "
+      });
+    });
+});
 
 module.exports = router;
