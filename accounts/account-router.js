@@ -39,8 +39,8 @@ router.post("/", (req, res) => {
 
   db("accounts")
     .insert(account)
-    .then(post => {
-      res.status(200).json(post);
+    .then(account => {
+      res.status(200).json(account);
     })
     .catch(error => {
       res
@@ -51,13 +51,15 @@ router.post("/", (req, res) => {
 
 router.put("/:id", (req, res) => {
   const changes = req.body;
+  const { id } = req.params;
 
   db("accounts")
-    .where({ id: req.params.id })
+    .where({ id })
     .update(changes)
     .then(count => {
+      console.log(count);
       if (count > 0) {
-        res.status.json(count);
+        res.status(200).json(count);
       } else {
         res
           .status(404)
@@ -77,7 +79,7 @@ router.delete("/:id", (req, res) => {
     .del()
     .then(count => {
       if (count > 0) {
-        res.status.json(count);
+        res.status(200).json(count);
       } else {
         res
           .status(404)
