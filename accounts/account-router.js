@@ -3,6 +3,7 @@ const db = require("../data/dbConfig.js");
 const router = express.Router();
 
 // adding first() in get /
+// for post why is it .insert(account, 'id') in guided
 
 router.get("/", (req, res) => {
   db.select("id", "name", "budget")
@@ -34,7 +35,27 @@ router.post("/", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {});
+router.put("/:id", (req, res) => {
+  const changes = req.body;
+
+  db("accounts")
+    .where({ id: req.params.id })
+    .update(changes)
+    .then(count => {
+      if (count > 0) {
+        res.status.json(count);
+      } else {
+        res
+          .status(404)
+          .json({ message: "There was an error updating the account." });
+      }
+    })
+    .catch(error => {
+      res
+        .status(500)
+        .json({ message: "There was an error getting the account. " });
+    });
+});
 
 router.delete("/:id", (req, res) => {});
 
