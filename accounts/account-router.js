@@ -5,6 +5,7 @@ const router = express.Router();
 // adding first() in get /
 // for post why is it .insert(account, 'id') in guided
 // put is not returning
+// delete not working
 
 router.get("/", (req, res) => {
   db("accounts")
@@ -18,7 +19,20 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {});
+router.get("/:id", (req, res) => {
+  db("accounts")
+    .where({ id: req.params.id })
+    .first()
+    .then(account => {
+      res.status(200).json(account);
+    })
+    .catch(error => {
+      res.status(500).json({
+        message:
+          "There was an error retrieving the account with the specified ID."
+      });
+    });
+});
 
 router.post("/", (req, res) => {
   const account = req.body;
